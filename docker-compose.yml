@@ -37,6 +37,22 @@ services:
       timeout: 5s
     volumes:
       - ./data/auth/pgdata:/var/lib/postgresql/data
+  
+  # Mongo
+  auth-mongo-database:
+    image: mongo:4.4.5
+    container_name: fastfeet_auth_mongo
+    networks:
+      - auth-network
+    ports:
+      - "28015:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: mongo_auth
+    restart: always
+    volumes:
+      - ./data/auth/mongodata:/var/lib/mongo/data
 
   # Cache
   auth-redis-cache:
@@ -71,6 +87,22 @@ services:
       timeout: 5s
     volumes:
       - ./data/problem/pgdata:/var/lib/postgresql/data
+  
+  # Mongo
+  problem-mongo-database:
+    image: mongo:4.4.5
+    container_name: fastfeet_problem_mongo
+    networks:
+      - problem-network
+    ports:
+      - "28016:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: mongo_problem
+    restart: always
+    volumes:
+      - ./data/problem/mongodata:/var/lib/mongo/data
 
   # Cache
   problem-redis-cache:
@@ -105,6 +137,23 @@ services:
       timeout: 5s
     volumes:
       - ./data/delivery/pgdata:/var/lib/postgresql/data
+
+  # Mongo
+  delivery-mongo-database:
+    image: mongo:4.4.5
+    container_name: fastfeet_delivery_mongo
+    networks:
+      - delivery-network
+    ports:
+      - "28017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: mongo_delivery
+    restart: always
+    volumes:
+      - ./data/delivery/mongodata:/var/lib/mongo/data
+
 
   # Cache
   delivery-redis-cache:
