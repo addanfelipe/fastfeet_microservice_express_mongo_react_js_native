@@ -49,7 +49,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: mongo_auth
+      MONGO_INITDB_DATABASE: fastfeet_auth
     restart: always
     volumes:
       - ./data/auth/mongodata:/var/lib/mongo/data
@@ -99,7 +99,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: mongo_problem
+      MONGO_INITDB_DATABASE: fastfeet_problem
     restart: always
     volumes:
       - ./data/problem/mongodata:/var/lib/mongo/data
@@ -149,7 +149,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: mongo_delivery
+      MONGO_INITDB_DATABASE: fastfeet_delivery
     restart: always
     volumes:
       - ./data/delivery/mongodata:/var/lib/mongo/data

@@ -1,32 +1,38 @@
-import { Model, Sequelize } from 'sequelize';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs'
+import mongo from '../../mongo'
 
-class User extends Model {
-  static init(sequelize) {
-    super.init(
-      {
-        name: Sequelize.STRING,
-        email: Sequelize.STRING,
-        password: Sequelize.VIRTUAL,
-        password_hash: Sequelize.STRING,
-      },
-      {
-        sequelize,
-      }
-    );
 
-    this.addHook('beforeSave', async user => {
-      if (user.password) {
-        user.password_hash = await bcrypt.hash(user.password, 8);
-      }
-    });
+const UserSchema = new mongo.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    lowercase: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
+})
 
-    return this;
-  }
+UserSchema.pre('save', async function(next) {
+  this.password = await bcrypt.hash(this.password, 8)
+  next()
+})
 
-  checkPassword(password) {
-    return bcrypt.compare(password, this.password_hash);
-  }
-}
+UserSchema.static('checkPassword', async function(password, password_hash) {
+  return await bcrypt.compare(password, password_hash)
+})
 
-export default User;
+
+UserSchema.static('initialDatabase', function() {
+  this.create({ email: 'admin@fastfeet.com', name: 'Distribuidora FastFeet', password: '123456' }).then(() => {}).catch(() => {})
+})
+
+
+export default mongo.model('User', UserSchema)

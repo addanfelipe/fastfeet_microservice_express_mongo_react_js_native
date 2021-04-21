@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
 import User from '../models/User';
 import authConfig from '../../config/auth';
+import User from '../models/User';
 
 class SessionController {
   async store(req, res) {
@@ -17,14 +18,14 @@ class SessionController {
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
 
-    if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'Wrong password' });
+    if (!(await User.checkPassword(password, user.password))) {
+      return res.status(401).json({ error: 'Wrong password' })
     }
 
     const { id, name } = user;

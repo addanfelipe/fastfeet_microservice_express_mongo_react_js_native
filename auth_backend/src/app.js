@@ -7,8 +7,7 @@ import * as Sentry from '@sentry/node';
 import 'express-async-errors';
 import routes from './routes';
 import sentryConfig from './config/sentry';
-
-import './database';
+import './mongo/initialDatabase'
 
 class App {
   constructor() {
