@@ -1,20 +1,17 @@
-import Sequelize, { Model } from 'sequelize';
+import mongo from '../../mongo';
 
-class Problem extends Model {
-  static init(sequelize) {
-    super.init(
-      {
-        description: Sequelize.STRING,
-        delivery_id: Sequelize.INTEGER
-      },
-      { sequelize, tableName: 'delivery_problems' }
-    );
+const problemSchema = new mongo.Schema(
+  {
+    description: {
+      type: String,
+      required: true,
+    },
+    delivery_id: {
+      type: Number,
+      required: true,
+    },
+  },
+  { collection: 'delivery_problems' }
+);
 
-    return this;
-  }
-
-  static associate(models) {
-  }
-}
-
-export default Problem;
+export default mongo.model('Problem', problemSchema);
