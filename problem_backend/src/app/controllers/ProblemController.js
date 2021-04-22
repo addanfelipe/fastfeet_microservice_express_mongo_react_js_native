@@ -4,30 +4,33 @@ import entregasService from '../services/entregasService';
 
 class ProblemController {
   async index(req, res) {
-    const { page = 1, limit = 5, id_in, delivery_id_in} = req.query
+    const { page = 1, id_in, delivery_id_in } = req.query;
 
-    let { fk_exclude } = req.query
-    fk_exclude = fk_exclude ? JSON.parse(fk_exclude) : []
-    
-    const where = {};
+    let { fk_exclude, limit } = req.query;
+    fk_exclude = fk_exclude ? JSON.parse(fk_exclude) : [];
+    limit = limit ? JSON.parse(limit) : 5;
+
+    const filter = {};
 
     if (id_in) {
-      where.id = { [Op.in]: JSON.parse(id_in) };
+      filter._id = { $in: JSON.parse(id_in) };
     }
 
     if (delivery_id_in) {
-      where.delivery_id = { [Op.in]: JSON.parse(delivery_id_in) };
+      filter.delivery_id = { $in: JSON.parse(delivery_id_in) };
     }
 
-    const total = await Problem.count({ where });
+    const total = await Problem.countDocuments({ filter });
 
-    let problems = await Problem.findAll({
-      where,
-      attributes: ['id', 'description', 'delivery_id', 'createdAt'],
-      order: [['id', 'DESC']],
-      limit,
-      offset: (page - 1) * limit,
-    });
+    let problems = await Problem.find(
+      filter,
+      ['id', 'description', 'delivery_id', 'createdAt'],
+      {
+        sort: { createdAt: 'desc' },
+        limit,
+        skip: (page - 1) * limit,
+      }
+    );
 
     if (!fk_exclude.includes('delivery')) {
       // ids unicos de delivery
@@ -42,7 +45,7 @@ class ProblemController {
         await entregasService.request(req.auth).get('/delivery', {
           params: {
             id_in: JSON.stringify(delivery_in),
-            fk_exclude: JSON.stringify(['problems'])
+            fk_exclude: JSON.stringify(['problems']),
           },
         })
       ).data;
@@ -77,15 +80,15 @@ class ProblemController {
     ).data;
 
     if (!delivery) {
-      return res.status(400).json({ error: 'Delivery doest not exists' });
+      return res.status(400).json({ error: 'Delivery does not exists' });
     }
 
-    const { id, description } = await Problem.create({
+    const problem = await Problem.create({
       delivery_id,
       ...req.body,
     });
 
-    return res.json({ id, description });
+    return res.json(problem);
   }
 }
 
