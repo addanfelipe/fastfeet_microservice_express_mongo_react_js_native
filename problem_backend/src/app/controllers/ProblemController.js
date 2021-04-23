@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { ObjectId } from 'mongoose';
 import Problem from '../models/Problem';
 import entregasService from '../services/entregasService';
 
@@ -13,30 +13,32 @@ class ProblemController {
     const filter = {};
 
     if (id_in) {
-      filter._id = { $in: JSON.parse(id_in) };
+      filter._id = { $in: JSON.parse(id_in).map(id => ObjectId(id)) };
     }
 
     if (delivery_id_in) {
-      filter.delivery_id = { $in: JSON.parse(delivery_id_in) };
+      filter.delivery = {
+        $in: JSON.parse(delivery_id_in).map(id => ObjectId(id)),
+      };
     }
 
     const total = await Problem.countDocuments(filter);
 
     let problems = await Problem.find(
       filter,
-      ['id', 'description', 'delivery_id', 'createdAt'],
+      ['id', 'description', 'created_at'],
       {
-        sort: { createdAt: 'desc' },
+        sort: { created_at: 'desc' },
         limit,
         skip: (page - 1) * limit,
       }
-    );
+    ).populate('delivery');
 
     if (!fk_exclude.includes('delivery')) {
       // ids unicos de delivery
       const delivery_in = [
         ...problems.reduce(
-          (current, item) => current.add(item.delivery_id),
+          (current, item) => current.add(item.delivery._id),
           new Set()
         ),
       ];

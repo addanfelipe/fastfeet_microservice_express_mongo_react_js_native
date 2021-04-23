@@ -6,9 +6,10 @@ const problemSchema = new mongo.Schema(
       type: String,
       required: true,
     },
-    delivery_id: {
-      type: Number,
+    delivery: {
+      type: mongo.ObjectId,
       required: true,
+      ref: 'Delivery',
     },
   },
   { collection: 'delivery_problems' }
