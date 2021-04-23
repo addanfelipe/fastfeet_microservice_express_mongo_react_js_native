@@ -1,22 +1,16 @@
-import * as Yup from 'yup';
-import Delivery from '../models/Delivery';
+import { ObjectId } from 'mongoose';
 import File from '../models/File';
+import Delivery from '../models/Delivery';
 
 class CompleteController {
   async update(req, res) {
-    const schema = Yup.object().shape({
-      signature_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
+    if (!ObjectId.isValid(req.body)) {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
     const delivery = await Delivery.findOne({
-      where: {
-        id: req.params.delivery_id,
-        deliveryman_id: req.params.deliveryman_id,
-      },
+      _id: req.params.delivery_id,
+      deliveryman: ObjectId(req.params.deliveryman_id),
     });
 
     if (!delivery) {
@@ -32,7 +26,7 @@ class CompleteController {
     }
 
     const { signature_id } = req.body;
-    const signature = await File.findByPk(signature_id);
+    const signature = await File.findById(signature_id);
 
     if (!signature) {
       return res
@@ -42,17 +36,17 @@ class CompleteController {
 
     const {
       id,
-      recipient_id,
-      deliveryman_id,
+      recipient,
+      deliveryman,
       product,
       start_date,
       end_date,
-    } = await delivery.update({ signature_id, end_date: new Date() });
+    } = await delivery.updateOne({ signature_id }, { end_date: new Date() });
 
     return res.json({
       id,
-      recipient_id,
-      deliveryman_id,
+      recipient_id: recipient._id,
+      deliveryman_id: deliveryman._id,
       product,
       start_date,
       end_date,
