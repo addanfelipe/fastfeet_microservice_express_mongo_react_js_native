@@ -20,7 +20,7 @@ class ProblemController {
       filter.delivery_id = { $in: JSON.parse(delivery_id_in) };
     }
 
-    const total = await Problem.countDocuments({ filter });
+    const total = await Problem.countDocuments(filter);
 
     let problems = await Problem.find(
       filter,
