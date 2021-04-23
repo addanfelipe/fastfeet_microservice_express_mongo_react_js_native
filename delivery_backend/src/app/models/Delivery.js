@@ -1,53 +1,40 @@
-import Sequelize, { Model } from 'sequelize';
+import mongo from '../../mongo';
 
-class Delivery extends Model {
-  static init(sequelize) {
-    super.init(
-      {
-        problems: {
-          type: Sequelize.VIRTUAL,
-          defaultValue: []
-        },
-        product: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        canceled_at: {
-          type: Sequelize.DATE,
-          allowNull: true,
-        },
-        start_date: {
-          type: Sequelize.DATE,
-          allowNull: true,
-        },
-        end_date: {
-          type: Sequelize.DATE,
-          allowNull: true,
-        },
-      },
-      {
-        sequelize,
-        tableName: 'deliveries',
-      }
-    );
+const deliverySchema = new mongo.Schema(
+  {
+    product: {
+      type: String,
+      required: true,
+    },
+    canceled_at: {
+      type: Date,
+    },
+    start_date: {
+      type: Date,
+    },
+    end_date: {
+      type: Date,
+    },
+    created_at: {
+      type: Date,
+      default: Date.now,
+    },
+    recipient: {
+      type: mongo.ObjectId,
+      ref: 'Recipient',
+    },
+    deliveryman: {
+      type: mongo.ObjectId,
+      ref: 'Deliveryman',
+    },
+    signature: {
+      type: mongo.ObjectId,
+      ref: 'File',
+    },
+  },
+  { collection: 'deliveries' }
+);
 
-    return this;
-  }
+deliverySchema.virtual('problems').get(() => []);
 
-  static associate(models) {
-    this.belongsTo(models.Recipient, {
-      foreignKey: 'recipient_id',
-      as: 'recipient',
-    });
-    this.belongsTo(models.Deliveryman, {
-      foreignKey: 'deliveryman_id',
-      as: 'deliveryman',
-    });
-    this.belongsTo(models.File, {
-      foreignKey: 'signature_id',
-      as: 'signature',
-    });
-  }
-}
-
-export default Delivery;
+export default mongo.model('Delivery', deliverySchema);

@@ -1,22 +1,18 @@
-import Sequelize, { Model } from 'sequelize';
+import mongo from '../../mongo';
 
-class File extends Model {
-  static init(sequelize) {
-    super.init(
-      {
-        name: Sequelize.STRING,
-        path: Sequelize.STRING,
-        url: {
-          type: Sequelize.VIRTUAL,
-          get() {
-            return `${process.env.APP_URL}/files/${this.path}`;
-          },
-        },
-      },
-      { sequelize }
-    );
-    return this;
-  }
-}
+const fileSchema = new mongo.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  path: {
+    type: String,
+    required: true,
+  },
+});
 
-export default File;
+fileSchema
+  .virtual('url')
+  .get(() => `${process.env.APP_URL}/files/${this.path}`);
+
+export default mongo.model('File', fileSchema);
