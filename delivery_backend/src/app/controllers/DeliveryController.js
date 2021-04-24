@@ -1,10 +1,8 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import { ObjectId } from 'mongoose';
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
 import Deliveryman from '../models/Deliveryman';
-import File from '../models/File';
 import NewDeliveryMail from '../jobs/NewDeliveryMail';
 import Queue from '../../lib/Queue';
 import problemasService from '../services/problemasService';
@@ -20,7 +18,7 @@ class DeliveryController {
     const filter = {};
 
     if (id_in) {
-      filter._id = { $in: JSON.parse(id_in).map(id => ObjectId(id)) };
+      filter._id = { $in: JSON.parse(id_in) };
     }
 
     if (q) {
@@ -66,10 +64,12 @@ class DeliveryController {
         return current;
       }, {});
 
-      deliveries = deliveries.map(delivery => {
-        delivery.dataValues.problems = problems[delivery.id];
-        return delivery;
-      });
+      if (Object.keys(problems).length > 0) {
+        deliveries = deliveries.map(delivery => {
+          delivery.dataValues.problems = problems[delivery.id];
+          return delivery;
+        });
+      }
     }
 
     return res.json({
@@ -82,7 +82,7 @@ class DeliveryController {
   }
 
   async show(req, res) {
-    const delivery = await Delivery.find({ _id: ObjectId(req.params.id) }, [
+    const delivery = await Delivery.find({ _id: req.params.id }, [
       'id',
       'product',
       'canceled_at',
@@ -110,8 +110,8 @@ class DeliveryController {
 
     const { recipient_id, deliveryman_id, product } = req.body;
 
-    const recipient = await Recipient.findById(ObjectId(recipient_id));
-    const deliveryman = await Deliveryman.findById(ObjectId(deliveryman_id));
+    const recipient = await Recipient.findById(recipient_id);
+    const deliveryman = await Deliveryman.findById(deliveryman_id);
 
     if (!recipient) {
       return res.status(400).json({ error: 'Recipient does not exists' });
@@ -122,8 +122,8 @@ class DeliveryController {
     }
 
     const { _id } = await Delivery.create({
-      recipient: ObjectId(recipient_id),
-      deliveryman: ObjectId(deliveryman_id),
+      recipient: recipient_id,
+      deliveryman: deliveryman_id,
       product,
     });
 
@@ -147,7 +147,7 @@ class DeliveryController {
       return res.status(400).json({ error: 'Validation Fails' });
     }
     // check if delivery exists
-    const delivery = await Delivery.findById(ObjectId(req.params.id));
+    const delivery = await Delivery.findById(req.params.id);
     if (!delivery) {
       return res.status(400).json({ error: 'Delivery does not exists' });
     }
@@ -155,15 +155,12 @@ class DeliveryController {
     const { recipient_id, deliveryman_id } = req.body;
 
     // check if recipient exists
-    if (recipient_id && !(await Recipient.findById(ObjectId(recipient_id)))) {
+    if (recipient_id && !(await Recipient.findById(recipient_id))) {
       return res.status(400).json({ error: 'Recipient does not exists' });
     }
 
     // check if deliveryman exissts
-    if (
-      deliveryman_id &&
-      !(await Deliveryman.findById(ObjectId(deliveryman_id)))
-    ) {
+    if (deliveryman_id && !(await Deliveryman.findById(deliveryman_id))) {
       return res.status(400).json({ error: 'Deliveryman does not exists' });
     }
 
@@ -173,7 +170,7 @@ class DeliveryController {
   }
 
   async delete(req, res) {
-    const delivery = await Delivery.findById(ObjectId(req.params.id));
+    const delivery = await Delivery.findById(req.params.id);
 
     if (!delivery) {
       return res.status(400).json({ error: 'Can not find this delivery' });

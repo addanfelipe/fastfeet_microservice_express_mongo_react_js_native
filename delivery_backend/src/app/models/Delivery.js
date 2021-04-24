@@ -36,5 +36,9 @@ const deliverySchema = new mongo.Schema(
 );
 
 deliverySchema.virtual('problems').get(() => []);
+deliverySchema.virtual('id').get(function() {
+  return this._id;
+});
+deliverySchema.set('toJSON', { virtuals: true });
 
 export default mongo.model('Delivery', deliverySchema);

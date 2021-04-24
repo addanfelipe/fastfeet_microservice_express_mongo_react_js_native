@@ -13,12 +13,12 @@ class ProblemController {
     const filter = {};
 
     if (id_in) {
-      filter._id = { $in: JSON.parse(id_in).map(id => ObjectId(id)) };
+      filter._id = { $in: JSON.parse(id_in) };
     }
 
     if (delivery_id_in) {
       filter.delivery = {
-        $in: JSON.parse(delivery_id_in).map(id => ObjectId(id)),
+        $in: JSON.parse(delivery_id_in),
       };
     }
 
