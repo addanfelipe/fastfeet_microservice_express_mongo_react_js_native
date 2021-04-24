@@ -20,6 +20,8 @@ const UserSchema = new mongo.Schema({
   },
 })
 
+UserSchema.index({ email: 1 });
+
 UserSchema.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, 8)
   next()

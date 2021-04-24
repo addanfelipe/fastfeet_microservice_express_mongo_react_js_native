@@ -22,13 +22,13 @@ class DeliveryController {
     }
 
     if (q) {
-      filter.product = { [Op.iLike]: `%${q}%` };
+//      filter.product = { [Op.iLike]: `%${q}%` };
     }
 
-    const total = await Delivery.count({ filter });
+    const total = await Delivery.countDocuments({ filter });
     let deliveries = await Delivery.find(
       filter,
-      ['id', 'product', 'canceled_at', 'start_date', 'end_date', 'created_at'],
+      null,
       {
         sort: { created_at: 'desc' },
         limit,

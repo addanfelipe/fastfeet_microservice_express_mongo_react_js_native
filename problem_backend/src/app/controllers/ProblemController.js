@@ -66,8 +66,6 @@ class ProblemController {
       problems = problems.filter(problem => problem.delivery);
     }
 
-    console.log(problems);
-
     return res.json({
       limit,
       page: Number(page),

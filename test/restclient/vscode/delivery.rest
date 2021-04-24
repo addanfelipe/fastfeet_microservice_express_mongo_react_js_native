@@ -1,9 +1,13 @@
 @HOST = http://localhost:3335
-@AUTHORIZATION = Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE4MDkwOTk2LCJleHAiOjE2MTg2OTU3OTZ9.CO-v1r_a81xU9IT4ZfrYZpeUi-lR99KcTO26EWhO0as
+@AUTHORIZATION = Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwN2Y5Y2YxNTBiNmNmZTRkY2NlMzQzYyIsImlhdCI6MTYxOTI3ODYwNSwiZXhwIjoxNjE5ODgzNDA1fQ.s8RW68JbRo-GkbXSreSOyOUFkem6VCdJRZNXgbjJdUg
 
 
 ### Index
 GET {{HOST}}/delivery
   ?id_in=[1,2]
   &fk_exclude=["problems"]
+{{AUTHORIZATION}}
+
+### Index
+GET {{HOST}}/delivery
 {{AUTHORIZATION}}

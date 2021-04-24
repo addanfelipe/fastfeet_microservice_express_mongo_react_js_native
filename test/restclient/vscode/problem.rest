@@ -8,7 +8,7 @@ POST {{HOST}}/problems
 Content-Type: application/json
 
 {
-  "delivery_id": "60842399734d0e7b8eec14b9",
+  "delivery_id": "60843dee7c2d42e0329cb55d",
   "description": "Vazio."
 }
 
@@ -18,4 +18,9 @@ GET {{HOST}}/problems
   &delivery_id_in=[1,2]
   &fk_exclude=["delivery"]
   &limit=1000
+{{AUTHORIZATION}}
+
+### Show
+GET {{HOST}}/problems
+  ?fk_exclude=["delivery"]
 {{AUTHORIZATION}}
