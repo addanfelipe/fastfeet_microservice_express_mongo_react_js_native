@@ -1,5 +1,5 @@
 @HOST = http://localhost:3333
-@AUTHORIZATION = Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwN2Y5YjVkODkzZTRmZDYzOGIxYzM1NCIsImlhdCI6MTYxODk3NTU5NiwiZXhwIjoxNjE5NTgwMzk2fQ.J6qlWpJOfE1QaJOtntze1Rvxo9AwVsZ6XpLZ9qGTPf8
+@AUTHORIZATION = Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwODQzZDJjYmYzNzdiZGZjNjMzNmEyYSIsImlhdCI6MTYxOTI4ODMxMSwiZXhwIjoxNjE5ODkzMTExfQ.QPpnPUeOQ_76Ag9fikh_KbTSbbWKaljUbdVnVTM_UAo
 
 ### Login
 POST {{HOST}}/sessions
@@ -10,7 +10,19 @@ Content-Type: application/json
   "password": "123456"
 }
 
-
 ### Check
 GET {{HOST}}/sessions
 {{AUTHORIZATION}}
+
+
+### Register
+POST {{HOST}}/users
+Content-Type: application/json
+{{AUTHORIZATION}}
+
+{
+  "name": "Ajhgdj AJhvd DJHvd DJHJH",
+  "email": "ahhsgfhsgfhs@fastfeet.com",
+  "password": "12345678"
+}
+
