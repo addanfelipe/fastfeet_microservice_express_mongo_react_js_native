@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongoose';
 import Problem from '../models/Problem';
 import entregasService from '../services/entregasService';
 
@@ -26,19 +25,21 @@ class ProblemController {
 
     let problems = await Problem.find(
       filter,
-      ['id', 'description', 'created_at'],
+      null,
       {
         sort: { created_at: 'desc' },
         limit,
         skip: (page - 1) * limit,
       }
-    ).populate('delivery');
+    )
+
+    //problems = JSON.parse(JSON.stringify(problems));
 
     if (!fk_exclude.includes('delivery')) {
       // ids unicos de delivery
       const delivery_in = [
         ...problems.reduce(
-          (current, item) => current.add(item.delivery._id),
+          (current, item) => current.add(item.delivery_id),
           new Set()
         ),
       ];
@@ -58,12 +59,14 @@ class ProblemController {
       }, {});
 
       problems = problems.map(problem => {
-        problem.dataValues.delivery = deliverys[problem.delivery_id];
+        problem.delivery = deliverys[problem.delivery_id];
         return problem;
       });
 
-      problems = problems.filter(problem => problem.dataValues.delivery);
+      problems = problems.filter(problem => problem.delivery);
     }
+
+    console.log(problems);
 
     return res.json({
       limit,
@@ -86,7 +89,7 @@ class ProblemController {
     }
 
     const problem = await Problem.create({
-      delivery_id,
+      delivery: delivery_id,
       ...req.body,
     });
 

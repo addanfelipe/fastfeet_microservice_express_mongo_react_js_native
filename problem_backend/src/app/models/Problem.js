@@ -6,13 +6,21 @@ const problemSchema = new mongo.Schema(
       type: String,
       required: true,
     },
-    delivery: {
+    delivery_id: {
       type: mongo.ObjectId,
       required: true,
-      ref: 'Delivery',
     },
   },
   { collection: 'delivery_problems' }
 );
+
+problemSchema.virtual('id').get(function() {
+  return this._id;
+});
+problemSchema.virtual('delivery');
+
+problemSchema.set('toJSON', { virtuals: true });
+
+
 
 export default mongo.model('Problem', problemSchema);

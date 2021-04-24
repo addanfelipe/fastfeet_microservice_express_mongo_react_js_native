@@ -1,16 +1,16 @@
-import { ObjectId } from 'mongoose';
+import mongo from '../../mongo';
 import File from '../models/File';
 import Delivery from '../models/Delivery';
 
 class CompleteController {
   async update(req, res) {
-    if (!ObjectId.isValid(req.body)) {
+    if (!mongo.Types.ObjectId.isValid(req.body)) {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
     const delivery = await Delivery.findOne({
       _id: req.params.delivery_id,
-      deliveryman: ObjectId(req.params.deliveryman_id),
+      deliveryman: req.params.deliveryman_id,
     });
 
     if (!delivery) {

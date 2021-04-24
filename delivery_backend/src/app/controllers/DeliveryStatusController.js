@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongoose';
 import Delivery from '../models/Delivery';
 
 class DeliveryStatusController {
@@ -8,7 +7,7 @@ class DeliveryStatusController {
 
     const deliveries = await Delivery.find(
       {
-        deliveryman: ObjectId(req.params.id),
+        deliveryman: req.params.id,
         canceled_at: null,
         signature: completed ? { $ne: null } : null,
       },
