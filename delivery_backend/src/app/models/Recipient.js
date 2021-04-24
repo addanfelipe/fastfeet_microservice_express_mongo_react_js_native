@@ -1,31 +1,39 @@
-import { Model, Sequelize } from 'sequelize';
+import mongo from '../../mongo';
 
-class Recipient extends Model {
-  static init(sequelize) {
-    super.init(
-      {
-        name: Sequelize.STRING,
-        street: Sequelize.STRING,
-        number: Sequelize.INTEGER,
-        complement: Sequelize.STRING,
-        state: Sequelize.STRING,
-        city: Sequelize.STRING,
-        zip_code: Sequelize.STRING,
-      },
-      {
-        sequelize,
-      }
-    );
+const recipientSchema = new mongo.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    street: {
+      type: String,
+      required: true,
+    },
+    number: {
+      type: Number,
+      required: true,
+    },
+    complement: {
+      type: String
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    zip_code: {
+      type: String,
+      required: true,
+    },
+  },
+  { collection: 'recipient' }
+);
 
-    return this;
-  }
+recipientSchema.virtual('id').get(function() { return this._id; });
+recipientSchema.set('toJSON', { virtuals: true });
 
-  static associate(models) {
-    this.hasMany(models.Delivery, {
-      foreignKey: 'recipient_id',
-      as: 'deliveries',
-    });
-  }
-}
-
-export default Recipient;
+export default mongo.model('Recipient', recipientSchema);

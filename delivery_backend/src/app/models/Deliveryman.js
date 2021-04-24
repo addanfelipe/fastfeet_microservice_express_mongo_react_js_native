@@ -1,24 +1,24 @@
-import Sequelize, { Model } from 'sequelize';
+import mongo from '../../mongo';
 
-class Deliveryman extends Model {
-  static init(sequelize) {
-    super.init(
-      {
-        name: Sequelize.STRING,
-        email: Sequelize.STRING,
-      },
-      {
-        sequelize,
-        tableName: 'deliverymen',
-      }
-    );
+const deliverymenSchema = new mongo.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: mongo.ObjectId,
+      ref: 'File',
+    },
+  },
+  { collection: 'deliverymen' }
+);
 
-    return this;
-  }
+deliverymenSchema.virtual('id').get(function() { return this._id; });
+deliverymenSchema.set('toJSON', { virtuals: true });
 
-  static associate(models) {
-    this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
-  }
-}
-
-export default Deliveryman;
+export default mongo.model('Deliveryman', deliverymenSchema);

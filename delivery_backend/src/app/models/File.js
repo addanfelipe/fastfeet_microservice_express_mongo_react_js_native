@@ -11,8 +11,9 @@ const fileSchema = new mongo.Schema({
   },
 });
 
-fileSchema
-  .virtual('url')
-  .get(() => `${process.env.APP_URL}/files/${this.path}`);
+fileSchema.virtual('url').get(() => `${process.env.APP_URL}/files/${this.path}`);
+
+fileSchema.virtual('id').get(function() { return this._id; });
+fileSchema.set('toJSON', { virtuals: true });
 
 export default mongo.model('File', fileSchema);

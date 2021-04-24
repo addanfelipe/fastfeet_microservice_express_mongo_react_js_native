@@ -7,33 +7,29 @@ import File from '../models/File';
 class DeliverymanController {
   async index(req, res) {
     const { q, page = 1, limit = 5 } = req.query;
-    const where = {};
+    const filter = {};
 
     if (q) {
-      where.name = { [Op.iLike]: `%${q}%` };
+      //      filter.name = { [Op.iLike]: `%${q}%` };
     }
 
-    const total = await Deliveryman.count({ where });
+    const total = await Deliveryman.countDocuments({ filter });
 
-    const deliverymen = await Deliveryman.findAll({
-      where,
-      attributes: ['id', 'name', 'email'],
-      limit,
-      offset: (page - 1) * limit,
-      order: [['id', 'DESC']],
-      include: [
-        {
-          model: File,
-          as: 'avatar',
-          attributes: ['id', 'path', 'url'],
-        },
-      ],
-    });
+    const deliverymen = await Deliveryman.find(
+      filter,
+      ['id', 'name', 'email'],
+      {
+        skip: (page - 1) * Number(limit),
+        sort: { id: 'desc' },
+        limit: Number(limit),
+      }
+    )
+      .populate('avatar');
 
     return res.json({
       limit,
       page: Number(page),
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / Number(limit)),
       total,
       items: deliverymen,
     });
@@ -42,18 +38,8 @@ class DeliverymanController {
   async show(req, res) {
     const { id } = req.params;
 
-    const deliveryman = await Deliveryman.findByPk(id, {
-      attributes: {
-        exclude: ['avatar_id'],
-      },
-      include: [
-        {
-          model: File,
-          as: 'avatar',
-          attributes: ['id', 'name', 'path', 'url'],
-        },
-      ],
-    });
+    const deliveryman = await Deliveryman.findById(id)
+      .populate('avatar');
 
     if (!deliveryman) {
       return res.status(400).json({ error: 'Deliveryman not found' });
@@ -75,7 +61,7 @@ class DeliverymanController {
     }
 
     const DeliverymanExists = await Deliveryman.findOne({
-      where: { email: req.body.email },
+      email: req.body.email,
     });
 
     if (DeliverymanExists) {
@@ -100,7 +86,7 @@ class DeliverymanController {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
-    const deliveryman = await Deliveryman.findByPk(req.params.id);
+    const deliveryman = await Deliveryman.findById(req.params.id);
 
     if (!deliveryman) {
       return res.status(400).json({ error: 'Deliveryman not exists' });
@@ -112,13 +98,13 @@ class DeliverymanController {
   }
 
   async delete(req, res) {
-    const deliveryman = await Deliveryman.findByPk(req.params.id);
+    const deliveryman = await Deliveryman.findById(req.params.id);
 
     if (!deliveryman) {
       return res.status(400).json({ error: 'Deliveryman not exists' });
     }
 
-    await deliveryman.destroy();
+    await deliveryman.remove();
 
     return res.status(200).json({});
   }

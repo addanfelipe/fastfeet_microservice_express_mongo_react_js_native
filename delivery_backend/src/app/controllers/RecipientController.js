@@ -6,40 +6,26 @@ import Delivery from '../models/Delivery';
 class RecipientController {
   async index(req, res) {
     const { q, page = 1, limit = 5 } = req.query;
-    const where = {};
+    const filter = {};
 
     if (q) {
-      where.name = { [Op.iLike]: `%${q}%` };
+//      filter.name = { [Op.iLike]: `%${q}%` };
     }
 
-    const total = await Recipient.count({ where });
-    const recipients = await Recipient.findAll({
-      where,
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
-      order: [['id', 'DESC']],
-      limit,
-      offset: (page - 1) * limit,
-      include: [
-        {
-          model: Delivery,
-          as: 'deliveries',
-          attributes: [
-            'id',
-            'product',
-            'start_date',
-            'end_date',
-            'canceled_at',
-          ],
-        },
-      ],
+    const total = await Recipient.countDocuments({ filter });
+    const recipients = await Recipient.find(
+      filter,
+      null,
+    {
+      sort: { id: 'desc' },
+      limit: Number(limit),
+      skip: (page - 1) * Number(limit),
     });
 
     return res.json({
       limit,
       page: Number(page),
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / Number(limit)),
       total,
       items: recipients,
     });
@@ -85,7 +71,7 @@ class RecipientController {
   async show(req, res) {
     const { id } = req.params;
 
-    const recipient = await Recipient.findByPk(id);
+    const recipient = await Recipient.findById(id);
 
     if (!recipient) return res.status(400).json({});
 
