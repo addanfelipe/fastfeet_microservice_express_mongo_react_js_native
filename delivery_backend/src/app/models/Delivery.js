@@ -36,8 +36,8 @@ const deliverySchema = new mongo.Schema(
 );
 
 deliverySchema.index({ deliveryman: 1 })
-deliverySchema.index({ created_at: 1 })
-deliverySchema.index({ _id: 1, created_at: 1 })
+deliverySchema.index({ created_at: -1 })
+deliverySchema.index({ _id: 1, created_at: -1 })
 
 deliverySchema.virtual('problems').get(() => []);
 deliverySchema.virtual('id').get(function() {
