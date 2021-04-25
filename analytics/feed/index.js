@@ -92,7 +92,7 @@ const fetchLogin = async () => {
     awaitFinish();
     console.log('init: ', Date.now())
     for (let i = 0; i < LEN; i++) {
-        apiAuth.get('/sessions').then(() => { countFinish += 1 }).catch(() => { })
+        apiAuth.post('/sessions', { email: 'admin@fastfeet.com', password: '123456' }).then(() => { countFinish += 1 }).catch(() => { })
     }
 }
 
