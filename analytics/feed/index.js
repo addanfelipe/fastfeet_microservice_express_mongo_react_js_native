@@ -29,7 +29,7 @@ const requestUser = () => {
     }
 }
 
-const requestDelivery = () => {
+const requestDelivery = async () => {
     const LEN = 1000;
     let countFinish = 0;
 
@@ -46,11 +46,11 @@ const requestDelivery = () => {
     awaitFinish();
     console.log('init: ', Date.now())
     for (let i = 0; i < LEN; i++) {
-        //apiAuth.post('/users', generateUser()).then(() => { countFinish += 1 }).catch(() => { })
+        apiDelivery.post('/delivery', (await generateDelivery())).then(() => { countFinish += 1 }).catch(() => { })
     }
 }
 
-const requestProblems = () => {
+const requestProblems = async () => {
     const LEN = 1000;
     let countFinish = 0;
 
@@ -67,7 +67,7 @@ const requestProblems = () => {
     awaitFinish();
     console.log('init: ', Date.now())
     for (let i = 0; i < LEN; i++) {
-        //apiAuth.post('/users', generateUser()).then(() => { countFinish += 1 }).catch(() => { })
+        apiProblems.post('/problems', (await generateProblems())).then(() => { countFinish += 1 }).catch(() => { })
     }
 }
 
@@ -78,7 +78,7 @@ async function main() {
     apiProblems.defaults.headers.Authorization = `Bearer ${token}`
     apiDelivery.defaults.headers.Authorization = `Bearer ${token}`
 
-    requestUser() // substituir pela que quiser chamar
+    requestProblems() // substituir pela que quiser chamar
 }
 
 function rnd(min, max) {
@@ -93,13 +93,41 @@ function generateUser() {
     }
 }
 
-function generateDelivery() {
+function generateDeliveryman() {
+    const data = generateUser()
+    delete data.password
+    return data
+}
+
+function generateRecipient() {
     return {
+        zip_code: rnd(10000000, 99999999),
+        state: rnd(10000000, 99999999),
+        city: rnd(10000000, 99999999),
+        complement: rnd(10000000, 99999999),
+        number: rnd(10000, 99999),
+        street: rnd(10000000, 99999999),
+        name: rnd(10000000000000000001, 99999999999999999999),
     }
 }
 
-function generateProblems() {
+async function generateDelivery() {
+    const deliverymanId = (await apiDelivery.post('/deliverymen', generateDeliveryman())).data.id
+    const recipientId = (await apiDelivery.post('/recipients', generateRecipient())).data.id
+
     return {
+      deliveryman_id: deliverymanId,
+      product: rnd(10000000000000000001, 99999999999999999999),
+      recipient_id: recipientId,
+    }
+}
+
+async function generateProblems() {
+    const deliveryId = (await apiDelivery.post('/delivery', await generateDelivery())).data.id
+
+    return {
+        "delivery_id": deliveryId,
+        "description": rnd(10000000000000000001, 99999999999999999999),
     }
 }
 
