@@ -9,6 +9,7 @@ const apiDelivery = axios.create({ baseURL: 'http://localhost:3335' });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const requestUser = () => {
+    console.log('FEED USERS')
     const LEN = 1000;
     let countFinish = 0;
 
@@ -30,6 +31,7 @@ const requestUser = () => {
 }
 
 const requestDelivery = async () => {
+    console.log('FEED DELIVERIES:')
     const LEN = 1000;
     let countFinish = 0;
 
@@ -51,6 +53,7 @@ const requestDelivery = async () => {
 }
 
 const requestProblems = async () => {
+    console.log('FEED PROBLEMS:')
     const LEN = 1000;
     let countFinish = 0;
 
@@ -71,6 +74,72 @@ const requestProblems = async () => {
     }
 }
 
+const fetchLogin = async () => {
+    console.log('FETCH LOGIN:')
+    const LEN = 1000;
+    let countFinish = 0;
+
+    const awaitFinish = async () => {
+        while(1) {
+            if (countFinish == LEN) {
+                console.log('end: ', Date.now())
+                break;
+            }
+            await delay(100)
+        }
+    }
+
+    awaitFinish();
+    console.log('init: ', Date.now())
+    for (let i = 0; i < LEN; i++) {
+        apiAuth.get('/sessions').then(() => { countFinish += 1 }).catch(() => { })
+    }
+}
+
+const fetchDeliveries = async () => {
+    console.log('FETCH DELIVERIES:')
+    const LEN = 1000;
+    let countFinish = 0;
+
+    const awaitFinish = async () => {
+        while(1) {
+            if (countFinish == LEN) {
+                console.log('end: ', Date.now())
+                break;
+            }
+            await delay(100)
+        }
+    }
+
+    awaitFinish();
+    console.log('init: ', Date.now())
+    for (let i = 0; i < LEN; i++) {
+        apiDelivery.get('/delivery').then(() => { countFinish += 1 }).catch(() => { })
+    }
+}
+
+const fetchProblems = async () => {
+    console.log('FETCH PROBLEMS:')
+    const LEN = 1000;
+    let countFinish = 0;
+
+    const awaitFinish = async () => {
+        while(1) {
+            if (countFinish == LEN) {
+                console.log('end: ', Date.now())
+                break;
+            }
+            await delay(100)
+        }
+    }
+
+    awaitFinish();
+    console.log('init: ', Date.now())
+    for (let i = 0; i < LEN; i++) {
+        apiProblems.get('/problems').then(() => { countFinish += 1 }).catch(() => { })
+    }
+}
+
 async function main() {
     const { data: { token } } = await apiAuth.post('/sessions', { email: 'admin@fastfeet.com', password: '123456' })
     console.log(token)
@@ -78,7 +147,7 @@ async function main() {
     apiProblems.defaults.headers.Authorization = `Bearer ${token}`
     apiDelivery.defaults.headers.Authorization = `Bearer ${token}`
 
-    requestProblems() // substituir pela que quiser chamar
+    requestDelivery() // substituir pela que quiser chamar
 }
 
 function rnd(min, max) {
