@@ -25,14 +25,14 @@ class DeliveryController {
 //      filter.product = { [Op.iLike]: `%${q}%` };
     }
 
-    const total = await Delivery.countDocuments({ filter });
+    const total = await Delivery.countDocuments(filter);
     let deliveries = await Delivery.find(
       filter,
       null,
       {
         sort: { created_at: 'desc' },
-        limit,
-        skip: (page - 1) * limit,
+        limit: Number(limit),
+        skip: (Number(page) - 1) * limit,
       }
     )
       .populate('recipient')
@@ -75,7 +75,7 @@ class DeliveryController {
     return res.json({
       limit,
       page: Number(page),
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / Number(limit) + total <= limit ? 1 : 0),
       total,
       items: deliveries,
     });

@@ -12,7 +12,7 @@ class RecipientController {
 //      filter.name = { [Op.iLike]: `%${q}%` };
     }
 
-    const total = await Recipient.countDocuments({ filter });
+    const total = await Recipient.countDocuments(filter);
     const recipients = await Recipient.find(
       filter,
       null,
@@ -25,7 +25,7 @@ class RecipientController {
     return res.json({
       limit,
       page: Number(page),
-      pages: Math.ceil(total / Number(limit)),
+      pages: Math.ceil(total / Number(limit) + total <= limit ? 1 : 0),
       total,
       items: recipients,
     });

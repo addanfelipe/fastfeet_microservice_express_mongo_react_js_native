@@ -69,7 +69,7 @@ class ProblemController {
     return res.json({
       limit,
       page: Number(page),
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / Number(limit) + total <= limit ? 1 : 0),
       total,
       items: problems,
     });

@@ -13,7 +13,7 @@ class DeliverymanController {
       //      filter.name = { [Op.iLike]: `%${q}%` };
     }
 
-    const total = await Deliveryman.countDocuments({ filter });
+    const total = await Deliveryman.countDocuments(filter);
 
     const deliverymen = await Deliveryman.find(
       filter,
@@ -29,7 +29,7 @@ class DeliverymanController {
     return res.json({
       limit,
       page: Number(page),
-      pages: Math.ceil(total / Number(limit)),
+      pages: Math.ceil(total / Number(limit) + total <= limit ? 1 : 0),
       total,
       items: deliverymen,
     });
