@@ -10,7 +10,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const requestUser = () => {
     console.log('FEED USERS')
-    const LEN = 1000;
+    const LEN = 5000;
     let countFinish = 0;
 
     const awaitFinish = async () => {
@@ -32,7 +32,7 @@ const requestUser = () => {
 
 const requestDelivery = async () => {
     console.log('FEED DELIVERIES:')
-    const LEN = 1000;
+    const LEN = 5000;
     let countFinish = 0;
 
     const awaitFinish = async () => {
@@ -54,7 +54,7 @@ const requestDelivery = async () => {
 
 const requestProblems = async () => {
     console.log('FEED PROBLEMS:')
-    const LEN = 1000;
+    const LEN = 5000;
     let countFinish = 0;
 
     const awaitFinish = async () => {
@@ -76,7 +76,7 @@ const requestProblems = async () => {
 
 const fetchLogin = async () => {
     console.log('FETCH LOGIN:')
-    const LEN = 1000;
+    const LEN = 5000;
     let countFinish = 0;
 
     const awaitFinish = async () => {
@@ -98,7 +98,7 @@ const fetchLogin = async () => {
 
 const fetchDeliveries = async () => {
     console.log('FETCH DELIVERIES:')
-    const LEN = 1000;
+    const LEN = 5000;
     let countFinish = 0;
 
     const awaitFinish = async () => {
@@ -120,7 +120,7 @@ const fetchDeliveries = async () => {
 
 const fetchProblems = async () => {
     console.log('FETCH PROBLEMS:')
-    const LEN = 1000;
+    const LEN = 5000;
     let countFinish = 0;
 
     const awaitFinish = async () => {
@@ -147,7 +147,12 @@ async function main() {
     apiProblems.defaults.headers.Authorization = `Bearer ${token}`
     apiDelivery.defaults.headers.Authorization = `Bearer ${token}`
 
-    requestDelivery() // substituir pela que quiser chamar
+    requestUser()
+//    requestDelivery()
+//    requestProblems()
+//    fetchLogin()
+//    fetchDeliveries()
+//    fetchProblems()
 }
 
 function rnd(min, max) {
@@ -156,9 +161,9 @@ function rnd(min, max) {
 
 function generateUser() {
     return {
-        name: rnd(10000000000000000001, 99999999999999999999),
+        name: `${rnd(10000000000000000001, 99999999999999999999)}`,
         email: `${rnd(10000000000000000001, 99999999999999999999)}@fastfeet.com`,
-        password: rnd(1000000001, 9999999999),
+        password: `${rnd(1000000001, 9999999999)}`,
     }
 }
 
