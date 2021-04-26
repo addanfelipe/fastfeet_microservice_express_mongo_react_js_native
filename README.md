@@ -14,9 +14,9 @@
 
 
 ### 📜 Sobre
-Este é um projeto de um serviço de gestão e acompanhamento de encomendas para uma transportadora fictícia. Construído com as tecnologias mais populares do mundo Javascript, este repositório contem uma API REST (Node.js) como backend, uma aplicação em ReactJS como frontend e um app mobile em React Native.
+Este é um projeto de um serviço de gestão e acompanhamento de encomendas para uma transportadora fictícia. Construído com as tecnologias mais populares do mundo Javascript, este repositório contem microsserviços APIs REST (Node.js) como backend, uma aplicação em ReactJS como frontend e um app mobile em React Native.
 
-A aplicação em **Node.js** (backend) é uma **API REST** escrita em **Node.JS** que serve dados tanto ao frontend quanto ao mobile. Possuí integração com o **Sentry** para monitoramento de erros em tempo real.
+As aplicações em **Node.js** são **APIs REST** escritas em **Node.JS** que servem dados tanto ao frontend quanto ao mobile. Possuindo integração com o **Sentry** para monitoramento de erros em tempo real.
 
 A aplicação em **ReactJS** (frontend) é para o administrador **cadastrar destinatários, entregadores e encomendas**. Assim podendo direcionar e fazer gestão das entregas e outros registros.
 
@@ -24,13 +24,13 @@ A aplicação em **React Native** é para o entregador visulizar as entregas e t
 
 ### 🔽 Requisitos
 1. Ter o **NodeJs** e o **Yarn** instalado
-2. Ter instâncias do **Redis** e **PostgreSQL** em execução
+2. Ter os containers **Docker** em execução
 3. Um dispositivo ou emulador **Android** conectado ao computador
 4. **Reactotron** rodando na porta 9090 (**Opcional**)
 
 ### :rocket: Começando
-1. ``https://github.com/addanfelipe/fastfeet_microservice_express_postgres_react_js_mobile.git``
-2. ``cd fastfeet_microservice_express_postgres_react_js_mobile``
+1. ``https://github.com/addanfelipe/fastfeet_microservice_express_mongo_react_js_native.git``
+2. ``cd fastfeet_microservice_express_mongo_react_js_native``
 
 ### :rocket: Iniciando com docker
 1. ``docker-componse up -d``
@@ -39,23 +39,24 @@ A aplicação em **React Native** é para o entregador visulizar as entregas e t
 1. ``cd auth_backend``
 2. ``yarn``
 3. ``Criar o arquivo .env com base no .env.example.docker``
-4. ``yarn sequelize db:migrate``
-5. ``yarn sequelize db:seed:all``
-6. ``yarn dev``
+4. ``yarn dev``
 
 ### :rocket: Iniciando com o delivery_backend
 1. ``cd delivery_backend``
 2. ``yarn``
 3. ``Criar o arquivo .env com base no .env.example.docker``
-4. ``yarn sequelize db:migrate``
-5. ``yarn dev``
+4. ``yarn dev``
 
 ### :rocket: Iniciando com o problem_backend
 1. ``cd problem_backend``
 2. ``yarn``
 3. ``Criar o arquivo .env com base no .env.example.docker``
-4. ``yarn sequelize db:migrate``
-5. ``yarn dev``
+4. ``yarn dev``
+
+### :rocket: Iniciando com o analytics (Analisador de desempenho dos MS)
+1. ``cd analytics``
+2. ``yarn``
+3. ``yarn feed`` (Deve ser definido o endpoint que será analisado na função main em feed/index.js)
 
 ### 💻 Iniciando com o Front-end 
 1. ``cd frontend``
